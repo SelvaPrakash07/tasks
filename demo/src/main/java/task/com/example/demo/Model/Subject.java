@@ -2,10 +2,14 @@ package task.com.example.demo.Model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -20,68 +24,11 @@ public class Subject {
     @Column(name = "subject_name")
     public String subjectName;
 
+    @CreationTimestamp
     @Column(name="created_at")
     public Timestamp createdAt;
 
-    @ManyToMany(mappedBy = "subject")
-    private List<Staff> staff;
-
-    public List<Staff> getStaff() {
-        return staff;
-    }
-
-    public void setStaff(List<Staff> staff) {
-        this.staff = staff;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getSubjectName() {
-        return subjectName;
-    }
-
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
-    }
-
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Timestamp getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Timestamp updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public int getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(int isActive) {
-        this.isActive = isActive;
-    }
-
-    public int getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(int isDeleted) {
-        this.isDeleted = isDeleted;
-    }
-
+    @UpdateTimestamp
     @Column(name="updated_at")
     public Timestamp updatedAt ;
 
@@ -90,6 +37,22 @@ public class Subject {
 
     @Column(name="Is_Deleted")
     public int isDeleted;
+
+
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
+    @JoinTable(name = "subject_staff",
+            joinColumns = { @JoinColumn(name = "subject_fk_id") },
+            inverseJoinColumns = { @JoinColumn(name = "staff_fk_id") })
+    private Set<Staff> staff = new HashSet<>();
+
+
+
+
+
 
 
 }

@@ -5,43 +5,51 @@ import org.springframework.web.bind.annotation.*;
 import task.com.example.demo.BaseResponse.BaseResponse;
 import task.com.example.demo.DTO.SectionDto;
 import task.com.example.demo.DTO.StaffDto;
-import task.com.example.demo.DTO.StandardDto;
-import task.com.example.demo.DTO.SubjectNdStaffDto;
-import task.com.example.demo.Service.ServiceImpl;
+import task.com.example.demo.Model.Section;
+import task.com.example.demo.Model.Staff;
+import task.com.example.demo.Serviceinterface.SectionInterface;
+import task.com.example.demo.Serviceinterface.Service;
+import task.com.example.demo.Serviceinterface.StaffInterface;
+
+import java.util.List;
+import java.util.Optional;
 
 
-    @RequestMapping("/staff")
+@RequestMapping("/staff")
     @RestController
     public class StaffController {
-        @Autowired
-        private ServiceImpl serviceimpl;
+    @Autowired
+    private StaffInterface staffInterface;
 
-        @PostMapping(value = "/save")
-        public BaseResponse saveStaff(@RequestBody StaffDto staffDto) {
-            return serviceimpl.savestaff(staffDto);
-        }
-        @GetMapping("/findall")
-        public BaseResponse findAllstaff() {
-            return serviceimpl.getAllStaff();
-        }
+    @PostMapping(value = "/save")
+    public BaseResponse saveStaff(@RequestBody StaffDto staffDto){
+        BaseResponse<Staff>  staffBaseResponse =null;
+        staffBaseResponse=BaseResponse.<Staff>builder().Data(staffInterface.savestaff(staffDto)).build() ;
+        return staffBaseResponse;
+    }
 
-        @GetMapping("/getbyid")
-        public BaseResponse getById(@PathVariable int id) {
-            return serviceimpl.getStaffById(id);
-        }
-        @PutMapping("/Update")
-        public BaseResponse update(@RequestBody StaffDto staffDto) {
-            return serviceimpl.updatestaff(staffDto);
-        }
+    @GetMapping("/findall")
+    public BaseResponse findAllstaff() {
+        BaseResponse<List<Staff>>  staffBaseResponse=null;
+        staffBaseResponse = BaseResponse.<List<Staff>>builder().Data(staffInterface.getAllstaff()).build();
+        return staffBaseResponse;
+    }
 
-        @PutMapping("/IsActive")
-        public BaseResponse Active(@RequestBody StaffDto staffDto) {
-            return serviceimpl.IsActiveStaff(staffDto);
-        }
-        @PutMapping("/IsDeleted")
-        public BaseResponse Deleted(@RequestBody StaffDto staffDto) {
-            return serviceimpl.IsDeletedStaff(staffDto);
-        }
+    @PutMapping("/update")
+    public BaseResponse updateById(@RequestBody StaffDto staffDto){
+        BaseResponse<Optional<Staff>>  staffBaseResponse=null;
+        staffBaseResponse = BaseResponse.<Optional<Staff>>builder().Data(staffInterface.UpdatestaffById(staffDto)).build();
+        return staffBaseResponse;
+    }
+
+    @PutMapping("/isdeleted")
+    public BaseResponse Deleted(@RequestBody  StaffDto staffDto) {
+        BaseResponse<Optional<Staff>>  staffBaseResponse=null;
+        staffBaseResponse=BaseResponse.<Optional<Staff>>builder().Data(staffInterface.IsDeletedstaff(staffDto)).build();
+        return staffBaseResponse;
+    }
+
+
 
 
     }

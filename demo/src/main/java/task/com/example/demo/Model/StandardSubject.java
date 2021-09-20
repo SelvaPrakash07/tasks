@@ -10,33 +10,7 @@ import javax.persistence.*;
 @Setter
 @Entity
 @Table(name = "standard_subject")
-
-
 public class StandardSubject {
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Standard getStandard() {
-        return standard;
-    }
-
-    public void setStandard(Standard standard) {
-        this.standard = standard;
-    }
-
-    public Subject getSubject1() {
-        return subject1;
-    }
-
-    public void setSubject1(Subject subject1) {
-        this.subject1 = subject1;
-    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

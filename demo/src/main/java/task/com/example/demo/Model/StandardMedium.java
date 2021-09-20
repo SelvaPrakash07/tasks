@@ -18,30 +18,6 @@ public class StandardMedium {
     @Column(name = "id")
     private int id;
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Standard getStandard() {
-        return standard;
-    }
-
-    public void setStandard(Standard standard) {
-        this.standard = standard;
-    }
-
-    public Medium getMedium1() {
-        return medium1;
-    }
-
-    public void setMedium1(Medium medium1) {
-        this.medium1 = medium1;
-    }
-
     @OneToOne
     @JoinColumn(name = "standard_fk_id")
     private Standard standard;

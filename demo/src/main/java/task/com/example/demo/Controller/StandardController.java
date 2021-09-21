@@ -39,7 +39,7 @@ import java.util.Optional;
         return standardBaseResponse;
     }
 
-    @GetMapping(value = "standard/name")
+    @GetMapping(value = "/name")
         public @ResponseBody
         PageResponse<Standard> getname(@RequestParam(defaultValue = "0") Integer pageNo,
                                        @RequestParam(defaultValue = "10") Integer pageSize,

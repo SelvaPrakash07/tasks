@@ -26,7 +26,7 @@ public class StaffService implements StaffInterface {
         ModelMapper modelMapper = new ModelMapper();
         Staff staff = modelMapper.map(staffDto, Staff.class);
         staffRepo.save(staff);
-        return null;
+        return staff;
     }
 
     @Override

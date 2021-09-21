@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 public class SubjectDto {
     private int id;
     public String subjectName;
-    public String code;
     public Timestamp createdAt;
     public Timestamp updatedAt ;
     public int isActive ;

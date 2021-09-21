@@ -41,7 +41,7 @@ public class Standard {
     public int isDeleted;
 
     @OneToOne
-    @JoinColumn(name="section_id_fk")
+    @JoinColumn(name="section_fk_id")
     private Section sectionid;
 
     @OneToMany(mappedBy = "medium1")

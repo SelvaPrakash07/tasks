@@ -11,9 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import task.com.example.demo.BaseResponse.PageResponse;
 import task.com.example.demo.Constants.MasterConstants;
-import task.com.example.demo.DTO.MediumDto;
-import task.com.example.demo.DTO.StandardDto;
-import task.com.example.demo.DTO.SubjectDto;
+import task.com.example.demo.DTO.*;
 import task.com.example.demo.Model.*;
 import task.com.example.demo.Repository.*;
 import task.com.example.demo.Serviceinterface.StandardInterface;
@@ -52,10 +50,6 @@ public class StandardService implements StandardInterface {
         try {
             ModelMapper modelMapper = new ModelMapper();
             Standard standard = modelMapper.map(standardDto, Standard.class);
-            standard.setCreatedAt(new Timestamp(new java.util.Date().getTime()));
-            standard.setUpdatedAt(new Timestamp(new java.util.Date().getTime()));
-            standard.setIsActive(0);
-            standard.setIsDeleted(0);
             Optional<Section> section = sectionRepo.findById(standardDto.getSectionId());
             if (section.isPresent()) {
                 standard.setSectionid(section.get());
@@ -71,17 +65,46 @@ public class StandardService implements StandardInterface {
     }
     @Override
     public PageResponse<Standard> getByname(Integer pageNo, Integer pageSize, String sortBy, String name) {
+        try {
+            PaginationDTO newDto = new PaginationDTO();
+            ModelMapper modelMapper = new ModelMapper();
+            List<StandDto> standardDtoLinkedList = new LinkedList<>();
+            List<SectionDto> sectionDtoLinkedList = new LinkedList<>();
             Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(Sort.Direction.DESC, sortBy));
-            Page<Standard> standardPage = standardRepo.searchAllByNameLike("%" + name + "%",paging);
-            PageResponse pageResponse=new PageResponse();
+            Page<Standard> standardPage = standardRepo.searchAllByNameLike("%" + name + "%", paging);
+            standardPage.getContent().stream().forEachOrdered(pagination1 -> {
+                StandDto standardDto = new StandDto();
+                standardDto.setId(pagination1.getId());
+                standardDto.setCode(pagination1.getCode());
+                standardDto.setName(pagination1.getName());
+                standardDto.setCreatedAt(pagination1.getCreatedAt());
+                standardDto.setUpdatedAt(pagination1.getUpdatedAt());
+                standardDto.setIsActive(pagination1.getIsActive());
+                standardDto.setIsDeleted(pagination1.getIsDeleted());
+                standardDtoLinkedList.add(standardDto);
+                SectionDto sectionDto = new SectionDto();
+                sectionDto.setSectionName(pagination1.getSectionid().getSectionName());
+                sectionDto.setCreatedAt(pagination1.getSectionid().getCreatedAt());
+                sectionDto.setUpdatedAt(pagination1.getSectionid().getUpdatedAt());
+                sectionDto.setIsActive(pagination1.getSectionid().getIsActive());
+                sectionDto.setIsDeleted(pagination1.getSectionid().getIsDeleted());
+                sectionDtoLinkedList.add(sectionDto);
+                newDto.setObj1(standardDtoLinkedList);
+                newDto.setObj2(sectionDtoLinkedList);
+            });
+            PageResponse pageResponse = new PageResponse();
             pageResponse.setHasNext(standardPage.hasNext());
             pageResponse.setHasPrevious(standardPage.hasPrevious());
             pageResponse.setTotalRecordCount(standardPage.getTotalPages());
             pageResponse.setData(standardPage);
             pageResponse.setStatusCode(MasterConstants.SUCCESS_CODE);
-           pageResponse.setStatusMessage(MasterConstants.SUCCESS_MESSAGE);
-       return pageResponse;
+            pageResponse.setStatusMessage(MasterConstants.SUCCESS_MESSAGE);
+            return pageResponse;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
+    }
 
     private void savestandardMedium(List<MediumDto> mediumDtoList, Standard standard) {
         try {
@@ -89,7 +112,7 @@ public class StandardService implements StandardInterface {
             if (Objects.nonNull(mediumDtoList) && mediumDtoList.size() > 0) {
                 mediumDtoList.stream().forEachOrdered(mediums -> {
                     Medium medium1 = mediumRepo.findById(mediums.getId())
-                            .orElseThrow(() -> new RuntimeException("id is not here"));
+                            .orElseThrow(() -> new RuntimeException("ID NOT FOUND"));
                     StandardMedium standardMedium1 = new StandardMedium();
                     standardMedium1.setStandard(standard);
                     standardMedium1.setMedium1(medium1);
